@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A, #CDDC39);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            max-width: 500px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 1s ease-in;
+            backdrop-filter: blur(10px);
+            transform: perspective(800px) rotateX(10deg);
+            transition: transform 0.5s;
+        }
+        .container:hover {
+            transform: perspective(800px) rotateX(0deg);
+        }
+        input {
+            padding: 12px;
+            width: 80%;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            margin-top: 15px;
+            padding: 12px;
+            background: #FFEB3B;
+            border: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #FFC107;
+            transform: scale(1.1);
+        }
+        .weather {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .weather h2 {
+            color: #FFF176;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.6);
+        }
+        .weather h3 {
+            color: #FF9800;
+            text-shadow: 2px 2px 10px rgba(255, 152, 0, 0.6);
+        }
+        .weather p {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            width: 80%;
+            font-size: 18px;
+            color: #ffffff;
+            text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.3);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 Weather Dashboard 🌦️</h1>
+        <input type="text" id="location" placeholder="Enter location">
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="weather" id="weather"></div>
+    </div>
+    <script>
+        async function getWeather() {
+            const location = document.getElementById('location').value;
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+            const apiKey = 'd9b386ece5b54caba39142138251703';
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                document.getElementById('weather').innerHTML = `
+                    <h2>${data.location.name}</h2>
+                    <h3>🌡️ ${data.current.temp_c}°C</h3>
+                    <p>🌥️ Condition: ${data.current.condition.text}</p>
+                    <p>💨 Wind Speed: ${data.current.wind_kph} kph</p>
+                    <p>💧 Humidity: ${data.current.humidity}%</p>
+                    <p>☔ Chance of Rain: ${data.current.precip_mm} mm</p>
+                `;
+            } catch (error) {
+                alert('Could not fetch weather data. Check the location and try again.');
+            }
+        }
+    </script>
+</body>
+</html>
